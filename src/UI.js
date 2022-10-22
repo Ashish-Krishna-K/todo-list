@@ -18,7 +18,25 @@ const projectInts = {
     deleteItem:
     function(arr, ind) {
         arr.splice(ind, 1);
-    }
+    },
+    checkItem:
+    function(status, label){
+        if(status){
+            label.classList.add('checked');
+        } else {    
+            label.classList.remove('checked');
+        }
+    },
+    setMainProject:
+    function(nodeList, title) {
+    nodeList.forEach((node) => {
+        node.classList.remove('active-project');
+
+        if(node.textContent === title){
+            node.classList.add('active-project');
+        };
+    });
+}
 }
 
 // each todo item will have the functionality to be checked, edited and deleted
@@ -34,11 +52,13 @@ const formBtnsInts = {
 
     showFrm:
     function(frm) {
-        frm.removeAttribute('hidden');
+        frm.setAttribute('hidden', false);
+        frm.className = 'show';
     },
     hideFrm:
     function(frm) {
         frm.setAttribute('hidden', true);
+        frm.className = 'hide';
     },
     createNewProject:
     function(input) {

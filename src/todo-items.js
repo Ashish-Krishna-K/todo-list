@@ -1,9 +1,10 @@
 class NewToDoItem {
-    constructor(title, description, dueDate, priority, project) {
+    constructor(title, description, dueDate, priority) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
+        this.completed = false;
     }
 
 }
@@ -21,7 +22,24 @@ const todoItemsInts = {
         activeItem.description = desc;
         activeItem.dueDate = dueDate;
         activeItem.priority = priority
-    }
+    },
+    editStatus:
+    function(activeTask, status) {
+        activeTask.completed = status;
+    },
+    setPriorityClass:
+    function(priority, taskNode){
+        switch (priority) {
+            case 'high':
+                taskNode.className = 'high';
+                break;
+            case 'medium':
+                taskNode.className = 'medium';
+                break;
+            case 'low':
+                taskNode.className = 'low';
+        } 
+    },
 }
 
 

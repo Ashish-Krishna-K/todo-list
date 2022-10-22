@@ -1,4 +1,5 @@
 import './style.css';
+
 import { projectsArr, projectsLogic } from './projects';
 import { projectInts, formBtnsInts } from './UI';
 import { todoItemsInts } from './todo-items';
@@ -36,7 +37,6 @@ const render = {
             const deleteProjectBtn = document.createElement('button');
             deleteProjectBtn.setAttribute('id', 'delete-project');
             deleteProjectBtn.dataset.index = projectsArr.indexOf(project);
-            deleteProjectBtn.textContent = 'Delete'
             projectDiv.appendChild(deleteProjectBtn);
 
             allProjectsDiv.appendChild(projectDiv);
@@ -47,6 +47,7 @@ const render = {
         allProjectsList.forEach(node => node.addEventListener('click', function(e){
             let clickedProjectIndex = e.target.dataset.index;
             render.renderMain(clickedProjectIndex);
+            projectInts.setMainProject(allProjectsList, render.titleDiv.textContent);
         }));
 
         const delProjectBtns = document.querySelectorAll('#delete-project');
@@ -59,7 +60,8 @@ const render = {
             projectInts.deleteProject(ind);
             render.renderSideBar();
             render.renderMain();
-        }))
+            projectInts.setMainProject(allProjectsList, render.titleDiv.textContent);
+        }));
     },
 
     // main content will render a project tilte(default will be home) and for all the todo items of the project a checkbox will be rendered
@@ -98,7 +100,18 @@ const render = {
             let index = projectsArr.indexOf(activeProject);
         
             render.renderMain(index);
-        }))
+            projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
+        }));
+
+        const allCheckboxes = document.querySelectorAll('.checkbox');
+        allCheckboxes.forEach(btn => btn.addEventListener('click', function(e){
+            let status = e.target.checked;
+            let label = e.target.nextSibling;
+            let activeTask = currentProject.tasks[btn.dataset.index];
+            projectInts.checkItem(status, label);
+
+            todoItemsInts.editStatus(activeTask, status);
+        }));
     },
 
     renderCheckbox:
@@ -110,27 +123,50 @@ const render = {
         listItem.dataset.index = ind;
         
         const box = document.createElement('input');
+        box.classList.add('checkbox')
         box.setAttribute('type', 'checkbox');
         box.setAttribute('id', obj.title);
+        box.dataset.index = ind;
+        box.checked = obj.completed;
 
-        const boxLabel = document.createElement('label');
-        boxLabel.setAttribute('for', obj.title);
-        boxLabel.textContent = `task:${obj.title} is due by: ${obj.dueDate} and has a priority level set to ${obj.priority}`;
+        const boxLabel = document.createElement('div');
+        boxLabel.setAttribute('id', 'task-display');
+        boxLabel.textContent = `task: ${obj.title} is due by: ${obj.dueDate} and has a priority level set to ${obj.priority}`;
+
+        const description = document.createElement('p');
+        description.textContent = obj.description;
+        description.setAttribute('hidden', true);
+        boxLabel.appendChild(description);
+                
+        boxLabel.addEventListener('click', function(){
+            const hidden = description.getAttribute('hidden');
+
+            if (hidden === 'true') {
+                description.setAttribute('hidden', false);
+                description.style.display = 'block';
+            } else {
+                description.setAttribute('hidden', true);
+                description.style.display = 'none';
+            };
+        });
         
         const editItemBtn = document.createElement('button');
         editItemBtn.classList.add('edit-item');
         editItemBtn.dataset.index = ind;
-        editItemBtn.textContent = 'Edit';
+        editItemBtn.textContent = '';
         
         const deleteItemBtn = document.createElement('button');
         deleteItemBtn.classList.add('delete-item');
         deleteItemBtn.dataset.index = ind;
-        deleteItemBtn.textContent = 'Delete';
+        deleteItemBtn.textContent = '';
         
         listItem.appendChild(box);
         listItem.appendChild(boxLabel);
         listItem.appendChild(editItemBtn);
         listItem.appendChild(deleteItemBtn);
+
+        projectInts.checkItem(obj.completed, boxLabel);
+        todoItemsInts.setPriorityClass(obj.priority, listItem);
 
         parent.appendChild(listItem);
     },
@@ -143,7 +179,8 @@ const formBtns = {
     createProjectBtn: document.querySelector('#create-project'),
     createItemBtn: document.querySelector('#create-item'),
     newProjectFrm: document.querySelector('#new-project-form'),
-    newItemFrm: document.querySelector('#new-item-form')
+    newItemFrm: document.querySelector('#new-item-form'),
+    cancelNewItemFrm: document.querySelector('#cancel'),
 }
 
 const formElements = {
@@ -157,6 +194,7 @@ const formElements = {
 
 render.renderSideBar();
 render.renderMain();
+projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
 
 formBtns.showProjectFrmBtn.addEventListener('click', function(){
     formBtnsInts.showFrm(formBtns.newProjectFrm);
@@ -168,6 +206,7 @@ formBtns.createProjectBtn.addEventListener('click', function(){
     };
     formBtnsInts.createNewProject(input);
     render.renderSideBar();
+    projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
     formBtnsInts.hideFrm(formBtns.newProjectFrm);
 });
 formBtns.showItemsFrmBtn.addEventListener('click', function(){
@@ -199,7 +238,13 @@ formBtns.createItemBtn.addEventListener('click', function(){
     }
 
     render.renderMain(index);
+    projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
     formBtnsInts.resetItemFrm(formElements.itemTitle, formElements.itemDescription, formElements.itemDueDate, 
         formElements.itemHighPriority, formElements.itemMediumPriority, formElements.itemLowPriority);
     formBtnsInts.hideFrm(formBtns.newItemFrm);
 });
+formBtns.cancelNewItemFrm.addEventListener('click', function(){
+    formBtnsInts.resetItemFrm(formElements.itemTitle, formElements.itemDescription, formElements.itemDueDate, 
+        formElements.itemHighPriority, formElements.itemMediumPriority, formElements.itemLowPriority);
+    formBtnsInts.hideFrm(formBtns.newItemFrm);
+})
