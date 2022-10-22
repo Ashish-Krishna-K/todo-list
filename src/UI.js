@@ -5,10 +5,7 @@ import { projectsArr, projectsLogic } from "./projects";
 const projectInts = {
     deleteProject: 
     function(e) {
-        const parentNode = e.target.parentNode;
-        const ind = parentNode.dataset.index;
-
-        projectsArr.splice(ind, 1);
+        projectsArr.splice(e, 1);
     },
     selectProject:
     function(e) {
@@ -17,20 +14,14 @@ const projectInts = {
             return projectsArr[0];
         }
         return projectsArr[e];
+    },
+    deleteItem:
+    function(arr, ind) {
+        arr.splice(ind, 1);
     }
 }
 
 // each todo item will have the functionality to be checked, edited and deleted
-
-const itemInts = {
-    deleteItem:
-    function(e) {
-        const parentNode = e.target.parentNode;
-        const ind = parentNode.dataset.index;
-
-        currentProject.tasks.splice(ind, 1);
-    }
-}
 
 // clicking new project in the sidebar will make a form appear which will accept a project name and a submit button
 // clicking the submit will do the following
@@ -75,25 +66,25 @@ const formBtnsInts = {
         high.checked = false;
         med.checked = false;
         low.checked = false
-
-        formBtnsInts.hideFrm(frm);
     },
     getPriorityValue:
     function(a, b, c) {
         if (a.checked) {
             return 'high'
         } else if (b.checked) {
-            return 'meidum'
+            return 'medium'
         } else if (c.checked) {
             return 'low'
         } else {
             return 'low'
         }
-    }
+    },
+
+
 };
 
 
 export {
     projectInts,
-    formBtnsInts
+    formBtnsInts,
 }

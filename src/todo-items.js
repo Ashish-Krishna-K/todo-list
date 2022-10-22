@@ -4,18 +4,27 @@ class NewToDoItem {
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
-        this.project = project
     }
 
 }
 
-function createTodoItem (title, description, dueDate, priority, project) {
-    const activeArr = project.tasks;
+const todoItemsInts = {
+    createTodoItem:
+    function(title, description, dueDate, priority, project) {
+        const activeArr = project.tasks;
 
-    activeArr.push(new NewToDoItem(title, description, dueDate, priority, project))
-};
+        activeArr.push(new NewToDoItem(title, description, dueDate, priority))
+    },
+    editTodoItem:
+    function(activeItem, title, desc, dueDate, priority) {
+        activeItem.title = title;
+        activeItem.description = desc;
+        activeItem.dueDate = dueDate;
+        activeItem.priority = priority
+    }
+}
 
 
 export {
-    createTodoItem
+    todoItemsInts
 }

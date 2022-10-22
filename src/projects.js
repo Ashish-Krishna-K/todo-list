@@ -7,7 +7,7 @@ class NewProject {
     }
 };
 
-projectsArr.push(new NewProject('home'));
+projectsArr.push(new NewProject('Home'));
 
 
 const projectsLogic = {

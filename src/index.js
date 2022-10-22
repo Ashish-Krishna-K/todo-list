@@ -1,7 +1,7 @@
 import './style.css';
 import { projectsArr, projectsLogic } from './projects';
 import { projectInts, formBtnsInts } from './UI';
-import { createTodoItem } from './todo-items';
+import { todoItemsInts } from './todo-items';
 
 // when page first loads sidebar and main DOM elements should be rendered
 
@@ -15,7 +15,7 @@ const render = {
 
     renderSideBar: 
     function () {
-        const allProjectsDiv = document.createElement('div');
+        const allProjectsDiv = document.createElement('ul');
         allProjectsDiv.setAttribute('id', 'projects-parent');
 
         if (render.projectsListDiv.hasChildNodes()) {
@@ -25,19 +25,40 @@ const render = {
         // sidebar will iterate over projects array and render a element for each project
 
         projectsArr.forEach((project) => {
-            const projectDiv = document.createElement('div');
-            projectDiv.classList.add('all-projects');
-            projectDiv.dataset.index = projectsArr.indexOf(project);
-            projectDiv.dataset.name = project.title;
-            projectDiv.textContent = project.title;
+            const projectDiv = document.createElement('li');
+            const projectDivText = document.createElement('div');
+            projectDivText.classList.add('all-projects');
+            projectDivText.dataset.index = projectsArr.indexOf(project);
+            projectDivText.dataset.name = project.title;
+            projectDivText.textContent = project.title;
+            projectDiv.appendChild(projectDivText);
+
+            const deleteProjectBtn = document.createElement('button');
+            deleteProjectBtn.setAttribute('id', 'delete-project');
+            deleteProjectBtn.dataset.index = projectsArr.indexOf(project);
+            deleteProjectBtn.textContent = 'Delete'
+            projectDiv.appendChild(deleteProjectBtn);
 
             allProjectsDiv.appendChild(projectDiv);
             render.projectsListDiv.appendChild(allProjectsDiv);
         });
+        const allProjectsList = document.querySelectorAll('.all-projects');
 
-        allProjectsDiv.childNodes.forEach(node => node.addEventListener('click', function(e){
+        allProjectsList.forEach(node => node.addEventListener('click', function(e){
             let clickedProjectIndex = e.target.dataset.index;
             render.renderMain(clickedProjectIndex);
+        }));
+
+        const delProjectBtns = document.querySelectorAll('#delete-project');
+        delProjectBtns.forEach(btn => btn.addEventListener('click', function(){
+            let ind = btn.dataset.index;
+            if (ind == 0) {
+                alert('You cannot delete the home project!');
+                return;
+            };
+            projectInts.deleteProject(ind);
+            render.renderSideBar();
+            render.renderMain();
         }))
     },
 
@@ -45,29 +66,75 @@ const render = {
 
     renderMain: 
     function(index) {
-        const allItemsDiv = document.createElement('div');
+        let a = document.querySelector('#items-parent');
+
+        if (a) {
+            render.itemsDiv.removeChild(a);
+        }
+        
+        const allItemsDiv = document.createElement('ul');
         allItemsDiv.setAttribute('id', 'items-parent');
         let currentProject = projectInts.selectProject(index);
-
         render.titleDiv.textContent = currentProject.title;
-        currentProject.tasks.forEach(task => render.renderCheckbox(task, allItemsDiv));
+        currentProject.tasks.forEach(task => render.renderCheckbox(task, currentProject.tasks.indexOf(task), allItemsDiv));
         render.itemsDiv.appendChild(allItemsDiv);
+
+        const allEditItemBtns = document.querySelectorAll('.edit-item');
+        allEditItemBtns.forEach(btn => btn.addEventListener('click', function(){
+            formBtnsInts.showFrm(formBtns.newItemFrm);
+            formBtns.newItemFrm.dataset.status = 'edit';
+            formBtns.newItemFrm.dataset.editIndex = btn.dataset.index;
+            let activeProjectTask = currentProject.tasks[btn.dataset.index];
+            formElements.itemTitle.value = activeProjectTask.title;
+            formElements.itemDescription.value = activeProjectTask.description;
+            formElements.itemDueDate.value = activeProjectTask.dueDate;
+        }));
+
+        const allDeleteItemBtns = document.querySelectorAll('.delete-item');
+        allDeleteItemBtns.forEach(btn => btn.addEventListener('click', function(){
+            projectInts.deleteItem(currentProject.tasks, btn.dataset.index);
+            
+            let activeProject = projectsLogic.getCurrentProject(render.titleDiv.textContent);
+            let index = projectsArr.indexOf(activeProject);
+        
+            render.renderMain(index);
+        }))
     },
 
     renderCheckbox:
-    function(obj, parent) {
+    function(obj, ind, parent) {
         if (!obj) {
             return;
         }
+        const listItem = document.createElement('li');
+        listItem.dataset.index = ind;
+        
         const box = document.createElement('input');
         box.setAttribute('type', 'checkbox');
         box.setAttribute('id', obj.title);
+
         const boxLabel = document.createElement('label');
         boxLabel.setAttribute('for', obj.title);
-        boxLabel.textContent = obj.title;
-        parent.appendChild(box);
-        parent.appendChild(boxLabel);
+        boxLabel.textContent = `task:${obj.title} is due by: ${obj.dueDate} and has a priority level set to ${obj.priority}`;
+        
+        const editItemBtn = document.createElement('button');
+        editItemBtn.classList.add('edit-item');
+        editItemBtn.dataset.index = ind;
+        editItemBtn.textContent = 'Edit';
+        
+        const deleteItemBtn = document.createElement('button');
+        deleteItemBtn.classList.add('delete-item');
+        deleteItemBtn.dataset.index = ind;
+        deleteItemBtn.textContent = 'Delete';
+        
+        listItem.appendChild(box);
+        listItem.appendChild(boxLabel);
+        listItem.appendChild(editItemBtn);
+        listItem.appendChild(deleteItemBtn);
+
+        parent.appendChild(listItem);
     },
+
 }
 
 const formBtns = {
@@ -101,13 +168,14 @@ formBtns.createProjectBtn.addEventListener('click', function(){
     };
     formBtnsInts.createNewProject(input);
     render.renderSideBar();
-    console.log(projectsArr);
     formBtnsInts.hideFrm(formBtns.newProjectFrm);
 });
 formBtns.showItemsFrmBtn.addEventListener('click', function(){
     formBtnsInts.showFrm(formBtns.newItemFrm);
+    formBtns.newItemFrm.dataset.status = 'new';
 });
 formBtns.createItemBtn.addEventListener('click', function(){
+
     let inputTitle = formElements.itemTitle.value;
     let inputDescription = formElements.itemDescription.value;
     let inputDueDate = formElements.itemDueDate.value;
@@ -120,8 +188,18 @@ formBtns.createItemBtn.addEventListener('click', function(){
     }
 
     let activeProject = projectsLogic.getCurrentProject(render.titleDiv.textContent);
+    let index = projectsArr.indexOf(activeProject);
+    let status = formBtns.newItemFrm.dataset.status;
 
-    createTodoItem(inputTitle, inputDescription, inputDueDate, inputPriority, activeProject);
-    render.renderMain();
-    formBtnsInts.resetItemFrm(formElements.itemTitle, formElements.itemDescription, formElements.itemDueDate, formElements.itemHighPriority, formElements.itemMediumPriority, formElements.itemLowPriority, formBtns.newItemFrm)
+    if (status === 'new') {
+        todoItemsInts.createTodoItem(inputTitle, inputDescription, inputDueDate, inputPriority, activeProject);
+    } else if (status === 'edit') {
+        let activeItem = activeProject.tasks[formBtns.newItemFrm.dataset.editIndex];
+        todoItemsInts.editTodoItem(activeItem, inputTitle, inputDescription, inputDueDate, inputPriority);
+    }
+
+    render.renderMain(index);
+    formBtnsInts.resetItemFrm(formElements.itemTitle, formElements.itemDescription, formElements.itemDueDate, 
+        formElements.itemHighPriority, formElements.itemMediumPriority, formElements.itemLowPriority);
+    formBtnsInts.hideFrm(formBtns.newItemFrm);
 });
