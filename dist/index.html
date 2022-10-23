@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-do List</title>
+    <script src="main.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>To-Do List</h1>
+    </header>
+    <div id="sidebar">
+        <h2>My Projects</h2>
+        <div id="projects-list"></div>
+
+        <button id="new-project">New Project</button>
+        <form action="#" id="new-project-form" class="hide" hidden>
+            <label for="project-name">Project Name</label>
+            <input type="text" id="project-name">
+
+            <button type="button" id="create-project">Create</button>
+        </form>
+    </div>
+    <main>
+        <h1 id="project-title">
+            
+        </h1>
+        <button id="new-item"></button>
+        <form action="#" id="new-item-form" class="hide" hidden>
+            <div id="form-heading">
+                <h2>New Task</h2>
+                <button type="button" id="cancel"></button>
+            </div>
+            
+                
+                    <label for="title">Name: </label>
+                    <input type="text" id="title">
+                
+                
+                    <label for="description">Description: </label>
+                    <textarea id="description" cols="1" rows="3"></textarea>
+                
+                
+                    <label for="due-date">Due by: </label>
+                    <input type="date" id="due-date">
+                
+                
+                    <label>Priority level: </label>
+                    <ul>
+                        <li>
+                            <input type="radio" id="high" name="priority">
+                            <label for="high">High</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="medium" name="priority">
+                            <label for="medium">Medium</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="low" name="priority">
+                            <label for="low">Low</label>
+                        </li>
+                    </ul>  
+                    <div id="create-item-div">
+                        <button type="button" id="create-item">Save</button>
+                    </div>                 
+        </form>
+        <div id="todo-items">
+
+        </div>
+    </main>
+    
+</body>
+</html>
