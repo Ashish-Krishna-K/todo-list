@@ -83,9 +83,9 @@ textarea {
 }
 
 #create-project:hover {
-    background-color: blue;
-    color: greenyellow;
-    box-shadow: 0 0 5px 2px greenyellow;
+    background-color: green;
+    color: yellow;
+    box-shadow: 0 0 5px 2px yellow;
 }
 
 #delete-project {
@@ -106,6 +106,8 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 1rem;
+    border-radius: 50px;
 
     font-weight:500;
 
@@ -113,6 +115,7 @@ textarea {
 
 .all-projects:hover {
     box-shadow: 0 0 5px 1px beige;
+    font-size: 1.5rem;
 }
 
 #new-item {
@@ -267,6 +270,9 @@ ul {
     flex: 1;
 
     font-weight:300;
+    padding: 0 24px;
+
+    font-weight: bold;
 
 }
 
@@ -311,7 +317,7 @@ ul {
 }
 
 .delete-item:hover {
-    box-shadow: 0 0 1px 1px black;
+    box-shadow: 0 0 1px 1px red;
 }
 
 .active-project {
@@ -355,16 +361,41 @@ textarea:focus,
 #project-name:focus,
 #title:focus,
 #due-date:focus,
-#textarea:focus,
-#high:focus,
-#medium:focus,
-#low:focus {
+#textarea:focus {
     border: none;
+    padding: 24px;
     box-shadow: 0 0 10px 5px yellow;
+}
+
+#high:hover,
+#medium:hover,
+#low:hover {
+    width: 25px;
 }
 
 #items-parent input {
     width: 25px;
     height: 25px;
     background-color: beige;
+}
+
+#cancel-project {
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 1rem;
+    background-color: yellow;
+    color: #663300;
+}
+
+#cancel-project:hover {
+    background-color: red;
+    color: yellow;
+    box-shadow: 0 0 5px 2px yellow;
+}
+
+
+p {
+    text-align: center;
 }

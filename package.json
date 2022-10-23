@@ -27,5 +27,6 @@
   },
   "dependencies": {
     "@mdi/font": "^7.0.96"
-  }
+  },
+  "main": "webpack.config.js"
 }

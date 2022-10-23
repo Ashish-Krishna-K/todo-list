@@ -3,8 +3,12 @@ import './style.css';
 import { projectsArr, projectsLogic } from './projects';
 import { projectInts, formBtnsInts } from './UI';
 import { todoItemsInts } from './todo-items';
+import storageFunctions from './storage';
 
 // when page first loads sidebar and main DOM elements should be rendered
+
+console.log('initial save');
+storageFunctions.saveToStorage(projectsArr);
 
 const render = {
     
@@ -16,6 +20,10 @@ const render = {
 
     renderSideBar: 
     function () {
+
+        projectsLogic.replaceProjectsArr();
+        console.log('sidebar was rendered from memory');
+
         const allProjectsDiv = document.createElement('ul');
         allProjectsDiv.setAttribute('id', 'projects-parent');
 
@@ -58,6 +66,8 @@ const render = {
                 return;
             };
             projectInts.deleteProject(ind);
+            console.log('a project was deleted');
+            storageFunctions.saveToStorage(projectsArr);
             render.renderSideBar();
             render.renderMain();
             projectInts.setMainProject(allProjectsList, render.titleDiv.textContent);
@@ -68,6 +78,10 @@ const render = {
 
     renderMain: 
     function(index) {
+
+        projectsLogic.replaceProjectsArr();
+        console.log('items was rendered from memory');
+
         let a = document.querySelector('#items-parent');
 
         if (a) {
@@ -95,6 +109,8 @@ const render = {
         const allDeleteItemBtns = document.querySelectorAll('.delete-item');
         allDeleteItemBtns.forEach(btn => btn.addEventListener('click', function(){
             projectInts.deleteItem(currentProject.tasks, btn.dataset.index);
+            console.log('an item was deleted');
+            storageFunctions.saveToStorage(projectsArr);
             
             let activeProject = projectsLogic.getCurrentProject(render.titleDiv.textContent);
             let index = projectsArr.indexOf(activeProject);
@@ -111,6 +127,8 @@ const render = {
             projectInts.checkItem(status, label);
 
             todoItemsInts.editStatus(activeTask, status);
+            console.log('an item completion status was changed');
+            storageFunctions.saveToStorage(projectsArr);
         }));
     },
 
@@ -181,6 +199,7 @@ const formBtns = {
     newProjectFrm: document.querySelector('#new-project-form'),
     newItemFrm: document.querySelector('#new-item-form'),
     cancelNewItemFrm: document.querySelector('#cancel'),
+    cancelNewProjectFrm: document.querySelector('#cancel-project'),
 }
 
 const formElements = {
@@ -205,6 +224,8 @@ formBtns.createProjectBtn.addEventListener('click', function(){
         return;
     };
     formBtnsInts.createNewProject(input);
+    console.log('a new project was created');
+    storageFunctions.saveToStorage(projectsArr);
     render.renderSideBar();
     projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
     formBtnsInts.hideFrm(formBtns.newProjectFrm);
@@ -232,9 +253,13 @@ formBtns.createItemBtn.addEventListener('click', function(){
 
     if (status === 'new') {
         todoItemsInts.createTodoItem(inputTitle, inputDescription, inputDueDate, inputPriority, activeProject);
+        console.log('a new item was created');
+        storageFunctions.saveToStorage(projectsArr);
     } else if (status === 'edit') {
         let activeItem = activeProject.tasks[formBtns.newItemFrm.dataset.editIndex];
         todoItemsInts.editTodoItem(activeItem, inputTitle, inputDescription, inputDueDate, inputPriority);
+        console.log('an item was edited');
+        storageFunctions.saveToStorage(projectsArr);
     }
 
     render.renderMain(index);
@@ -247,4 +272,10 @@ formBtns.cancelNewItemFrm.addEventListener('click', function(){
     formBtnsInts.resetItemFrm(formElements.itemTitle, formElements.itemDescription, formElements.itemDueDate, 
         formElements.itemHighPriority, formElements.itemMediumPriority, formElements.itemLowPriority);
     formBtnsInts.hideFrm(formBtns.newItemFrm);
-})
+});
+formBtns.cancelNewProjectFrm.addEventListener('click', function(){
+    let input = document.querySelector('#project-name');
+    formBtnsInts.resetProjectFrom(input);
+    formBtnsInts.hideFrm(formBtns.newProjectFrm);
+});
+

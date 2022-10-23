@@ -87,6 +87,10 @@ const formBtnsInts = {
         med.checked = false;
         low.checked = false
     },
+    resetProjectFrom:
+    function(input) {
+        input = '';
+    },
     getPriorityValue:
     function(a, b, c) {
         if (a.checked) {

@@ -1,4 +1,6 @@
-const projectsArr = [];
+import storageFunctions from './storage';
+
+let projectsArr = [];
 
 class NewProject {
     constructor(title) {
@@ -23,6 +25,13 @@ const projectsLogic = {
             }
         });
         return newArr[0];
+    },
+    replaceProjectsArr: 
+    function() {
+
+        const loadedArray = storageFunctions.loadFromStorage();
+
+        projectsArr.splice(0, projectsArr.length, ...loadedArray)
     }
 }
 
