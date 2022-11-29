@@ -13,8 +13,9 @@ const todoItemsInts = {
     createTodoItem:
     function(title, description, dueDate, priority, project) {
         const activeArr = project.tasks;
+        const todoItem = new NewToDoItem(title, description, dueDate, priority)
 
-        activeArr.push(new NewToDoItem(title, description, dueDate, priority))
+        activeArr.push(Object.assign({}, todoItem));
     },
     editTodoItem:
     function(activeItem, title, desc, dueDate, priority) {

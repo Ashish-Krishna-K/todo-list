@@ -1,19 +1,20 @@
 // each project item will have the functionality to be selected and deleted
 
 import { projectsArr, projectsLogic } from "./projects";
+import { storageFunctions } from "./storage";
 
 const projectInts = {
     deleteProject: 
     function(e) {
-        projectsArr.splice(e, 1);
+        storageFunctions.deleteFromStorage(projectsArr.splice(e, 1));
     },
     selectProject:
-    function(e) {
-
-        if (!e){
+    function(index) {
+        console.log(projectsArr);
+        if (!index){
             return projectsArr[0];
         }
-        return projectsArr[e];
+        return projectsArr[index];
     },
     deleteItem:
     function(arr, ind) {

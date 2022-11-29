@@ -3,12 +3,51 @@ import './style.css';
 import { projectsArr, projectsLogic } from './projects';
 import { projectInts, formBtnsInts } from './UI';
 import { todoItemsInts } from './todo-items';
-import storageFunctions from './storage';
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import { activeUser, storageFunctions  } from './storage';
 
 // when page first loads sidebar and main DOM elements should be rendered
 
-console.log('initial save');
-storageFunctions.saveToStorage(projectsArr);
+const provider = new GoogleAuthProvider();
+const auth = getAuth();
+
+class User {
+    constructor(name, email, imageURL, UID) {
+        this.name = name,
+        this.email = email,
+        this.image = imageURL,
+        this.id = UID
+    }
+}
+
+export async function loginFunc() {
+    try {
+        await signInWithPopup(auth, provider);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function logutFunc() {
+    try {
+        await signOut(auth);
+        console.log(auth.currentUser);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        console.log(user.displayName);
+        const presentUser = new User(user.displayName, user.email, user.photoURL, user.uid);
+        renderUserDeatils(true, presentUser);
+        activeUser.updateActiveUser(presentUser);
+        renderContent();
+    } else {
+        renderUserDeatils(false);
+    }
+})
 
 const render = {
     
@@ -19,9 +58,9 @@ const render = {
     itemsDiv: document.querySelector('#todo-items'),
 
     renderSideBar: 
-    function () {
+    function (projectsArrayFromDB) {
 
-        projectsLogic.replaceProjectsArr();
+        projectsLogic.replaceProjectsArr(projectsArrayFromDB);
         console.log('sidebar was rendered from memory');
 
         const allProjectsDiv = document.createElement('ul');
@@ -54,7 +93,7 @@ const render = {
 
         allProjectsList.forEach(node => node.addEventListener('click', function(e){
             let clickedProjectIndex = e.target.dataset.index;
-            render.renderMain(clickedProjectIndex);
+            renderContent(clickedProjectIndex);
             projectInts.setMainProject(allProjectsList, render.titleDiv.textContent);
         }));
 
@@ -68,8 +107,7 @@ const render = {
             projectInts.deleteProject(ind);
             console.log('a project was deleted');
             storageFunctions.saveToStorage(projectsArr);
-            render.renderSideBar();
-            render.renderMain();
+            renderContent();
             projectInts.setMainProject(allProjectsList, render.titleDiv.textContent);
         }));
     },
@@ -77,9 +115,9 @@ const render = {
     // main content will render a project tilte(default will be home) and for all the todo items of the project a checkbox will be rendered
 
     renderMain: 
-    function(index) {
-
-        projectsLogic.replaceProjectsArr();
+    function(index, projectsArrayFromDB) {
+        console.log(projectsArrayFromDB);
+        projectsLogic.replaceProjectsArr(projectsArrayFromDB);
         console.log('items was rendered from memory');
 
         let a = document.querySelector('#items-parent');
@@ -90,7 +128,8 @@ const render = {
         
         const allItemsDiv = document.createElement('ul');
         allItemsDiv.setAttribute('id', 'items-parent');
-        let currentProject = projectInts.selectProject(index);
+        const currentProject = projectInts.selectProject(index);
+        console.log(currentProject);
         render.titleDiv.textContent = currentProject.title;
         currentProject.tasks.forEach(task => render.renderCheckbox(task, currentProject.tasks.indexOf(task), allItemsDiv));
         render.itemsDiv.appendChild(allItemsDiv);
@@ -115,7 +154,7 @@ const render = {
             let activeProject = projectsLogic.getCurrentProject(render.titleDiv.textContent);
             let index = projectsArr.indexOf(activeProject);
         
-            render.renderMain(index);
+            renderContent(index);
             projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
         }));
 
@@ -211,10 +250,6 @@ const formElements = {
     itemLowPriority: document.querySelector('#low')    
 }
 
-render.renderSideBar();
-render.renderMain();
-projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
-
 formBtns.showProjectFrmBtn.addEventListener('click', function(){
     formBtnsInts.showFrm(formBtns.newProjectFrm);
 });
@@ -226,7 +261,7 @@ formBtns.createProjectBtn.addEventListener('click', function(){
     formBtnsInts.createNewProject(input);
     console.log('a new project was created');
     storageFunctions.saveToStorage(projectsArr);
-    render.renderSideBar();
+    renderContent();
     projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
     formBtnsInts.hideFrm(formBtns.newProjectFrm);
 });
@@ -262,7 +297,7 @@ formBtns.createItemBtn.addEventListener('click', function(){
         storageFunctions.saveToStorage(projectsArr);
     }
 
-    render.renderMain(index);
+    renderContent(index);
     projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
     formBtnsInts.resetItemFrm(formElements.itemTitle, formElements.itemDescription, formElements.itemDueDate, 
         formElements.itemHighPriority, formElements.itemMediumPriority, formElements.itemLowPriority);
@@ -279,3 +314,49 @@ formBtns.cancelNewProjectFrm.addEventListener('click', function(){
     formBtnsInts.hideFrm(formBtns.newProjectFrm);
 });
 
+const loginBtn = document.querySelector('#login-btn');
+const logoutBtn = document.querySelector('#logout-btn');
+const displayUserDP = document.querySelector('#user-dp');
+const displayUserName = document.querySelector('#user-name');
+const contentPage = document.querySelector('#content'); 
+
+loginBtn.addEventListener('click', loginFunc);
+logoutBtn.addEventListener('click', logutFunc);
+
+export function renderUserDeatils(status, user) {
+    if (status) {
+        displayUserDP.setAttribute('src', user.image);
+        displayUserDP.setAttribute('alt', user.name);
+        displayUserDP.classList.remove('hidden');
+        formBtns.showProjectFrmBtn.classList.remove('hidden');
+        formBtns.showItemsFrmBtn.classList.remove('hidden');
+        displayUserName.textContent = user.name;  
+        renderContent();
+    } else {
+        displayUserDP.removeAttribute('src');
+        displayUserDP.removeAttribute('alt');
+        displayUserDP.classList.add('hidden');
+        displayUserName.textContent = '';
+        formBtns.showProjectFrmBtn.classList.add('hidden');
+        formBtns.showItemsFrmBtn.classList.add('hidden');
+    }  
+}
+
+async function renderContent(ind) {
+    let index = ind || 0;
+    const dataFromDB = await storageFunctions.loadFromStorage();
+
+    if (!dataFromDB) {
+        storageFunctions.saveToStorage(projectsArr);
+        console.log('initial save');
+        renderContent();
+        return;
+    }
+
+    const projectsArrayFromDB = Array.from(dataFromDB);
+    console.log(projectsArrayFromDB);
+    render.renderSideBar(projectsArrayFromDB);
+    console.log(projectsArrayFromDB);
+    render.renderMain(index, projectsArrayFromDB); 
+    projectInts.setMainProject(document.querySelectorAll('.all-projects'), render.titleDiv.textContent);
+}

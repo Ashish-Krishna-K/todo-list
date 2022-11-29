@@ -25,6 +25,36 @@ header {
     padding: 12px 48px;
     font-size: 2rem;
     font-weight:900;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+#user-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+#user-info>img {
+    border-radius: 100px;
+    height: 50px;
+    width: 50px;
+}
+
+#login-buttons {
+    align-self: flex-end;
+}
+
+#login-buttons>button {
+    padding: 2px 50px;
+    border-radius: 20px;
+    font-size: inherit;
+    font-family: inherit;
+    background-color: #663300;
+    color: beige;
+    border-color: olive;
 }
 
 input,
@@ -398,4 +428,8 @@ textarea:focus,
 
 p {
     text-align: center;
+}
+
+.hidden {
+    visibility: hidden;
 }
