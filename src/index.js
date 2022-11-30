@@ -31,7 +31,7 @@ export async function loginFunc() {
 export async function logutFunc() {
     try {
         await signOut(auth);
-        console.log(auth.currentUser);
+        location.reload();
     } catch (error) {
         console.log(error);
     }
