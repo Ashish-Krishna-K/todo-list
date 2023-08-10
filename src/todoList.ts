@@ -29,7 +29,7 @@ const TodoList = (() => {
     const editProjectName = (projectId: string, newName: string) => {
         const selectedProject = _listArray.filter(project => project.getProjectId() === projectId)[0];
         selectedProject.setProjectName(newName);
-        EventsObserver.publish("projectNameChanged", selectedProject);
+        EventsObserver.publish("projectNameChanged", getList());
     }
     const deleteProject = (projectId: string) => {
         _listArray = _listArray.filter(project => project.getProjectId() !== projectId);
