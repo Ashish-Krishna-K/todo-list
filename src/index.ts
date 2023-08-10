@@ -1,8 +1,4 @@
 const EventsObserver = (() => {
-    type EventHandler = <T>(data?:T) => void;
-    interface Events {
-        [key: string]: EventHandler[]
-    }
     const events: Events = {};
 
     const subscribe = (eventName:string, eventHandler:EventHandler) => {
