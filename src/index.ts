@@ -1,8 +1,8 @@
 // Create an eventsObserver to avoid coupling
 const EventsObserver = (() => {
-    const events: Events = {};
+    const events: EventsType = {};
 
-    const subscribe = (eventName: string, eventHandler: EventHandler) => {
+    const subscribe = (eventName: string, eventHandler: EventHandlerType) => {
         // If the provided event name is present in events object, add the passed in
         // eventHandler to that event's list, if not create a new event and add the event handler
         if (events.eventName === undefined) {
@@ -10,7 +10,7 @@ const EventsObserver = (() => {
         }
         events.eventName.push(eventHandler);
     };
-    const unsubscribe = (eventName: string, eventHandler: EventHandler) => {
+    const unsubscribe = (eventName: string, eventHandler: EventHandlerType) => {
         if (eventName in events) {
             events.eventName = events.eventName.filter(fn => JSON.stringify(fn) !== JSON.stringify(eventHandler));
         }
