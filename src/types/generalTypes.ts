@@ -5,5 +5,15 @@ interface Events {
 }
 
 interface Project {
+    _projectName: string;
+    _todos: TodoItem[];
+    getProjectName: () => string;
+    setProjectName: (newName:string) => void;
+    getAllTodos: () => TodoItem[];
+    addTodoItem: (todo: TodoItem) => void;
+    
+}
+
+interface TodoItem {
 
 }
