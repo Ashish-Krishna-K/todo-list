@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List</title>
+</head>
+
+<body>
+    <header>
+        <h1>To-do List</h1>
+    </header>
+    <main>
+        <aside id="sidebar">
+            <div id="project-form-section">
+                <button type="button" class="add-project">Add New Project</button>
+                <form action="#" id="add-project-form" class="hidden">
+                    <div class="form-header">
+                        <h2>Add Project</h2>
+                        <button type="button" class="cancel-add-project">Cancel</button>
+                    </div>
+                    <div class="name-section">
+                        <label for="project-name">Project Name</label>
+                        <input type="text" name="project-name" id="project-name">
+                    </div>
+                    <div class="controls-section">
+                        <button type="submit" class="submit-project-btn">Add</button>
+                        <button type="reset">Clear</button>
+                    </div>
+                </form>
+            </div>
+            <div class="projects-section"></div>
+        </aside>
+        <div id="todo-form-section">
+            <button type="button" class="add-todo">Add Todo</button>
+            <form action="#" id="add-todo-form" class="hidden">
+                <div class="form-header">
+                    <h2>Add Todo</h2>
+                    <button type="button" class="cancel-add-todo">Cancel</button>
+                </div>
+                <div class="title-section">
+                    <label for="title">Title</label>
+                    <input type="text" name="title" id="title">
+                </div>
+                <div class="description-section">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" cols="30" rows="10"></textarea>
+                </div>
+                <div class="dueDate-section">
+                    <label for="due-date">Due by</label>
+                    <input type="date" name="dueDate" id="due-date">
+                </div>
+                <div class="priority-section">
+                    <h3>Set Priority</h3>
+                    <div class="radio-option">
+                        <input type="radio" name="priority" id="high" value="HIGH">
+                        <label for="high">High</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="priority" id="medium" value="MEDIUM">
+                        <label for="medium">Medium</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="priority" id="low" value="LOW">
+                        <label for="low">Low</label>
+                    </div>
+                </div>
+                <div class="controls-section">
+                    <button type="submit" class="submit-todo-btn">Add</button>
+                    <button type="reset">Clear</button>
+                </div>
+            </form>
+        </div>
+        <div id="edit-todo-form-section" class="hidden"></div>
+        <div id="todos-section"></div>
+        <div id="errors-section" class="hidden">
+            <h2>ERROR</h2>
+            <p class="error-msg"></p>
+            <button class="dismiss-error">OK</button>
+        </div>
+    </main>
+    <footer>
+        <p>Project by <a href="https://github.com/Ashish-Krishna-K">Ashish-Krishna-K</a></p>
+    </footer>
+</body>
+
+</html>

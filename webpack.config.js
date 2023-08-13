@@ -1,7 +1,14 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: [
+        './src/scripts/displayComponents.ts',
+        './src/scripts/displayController.ts',
+        './src/scripts/projectController.ts',
+        './src/scripts/storageController.ts',
+        './src/scripts/index.ts'
+    ],
     output: {
         filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
@@ -31,4 +38,11 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.jsx', '.js'],
     },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: 'Custom template',
+            // Load a custom template (lodash by default)
+            template: './index.html'
+        })
+    ]
 };
