@@ -1,3 +1,347 @@
+/* Generic/Universal stuff */
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --base: rgb(238, 238, 238);
+    --green-accent: rgb(139, 154, 70);
+    --brown-accent: rgb(84, 18, 18);
+    --primary: rgb(15, 14, 14);
+    --link-accent: rgb(255, 255, 102);
+    --high-priority: rgb(255, 0, 0, 0.9);
+    --medium-priority: rgb(255, 255, 102, 0.9);
+    --low-priority: rgb(0, 255, 0, 0.9)
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
 .hidden {
-    display: none;
+    opacity: 0;
+    display: none !important;
+}
+
+button {
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    border-radius: 10px;
+}
+
+input,
+textarea {
+    border-radius: 5px;
+}
+
+::-webkit-calendar-picker-indicator {
+    background-color: var(--base);
+}
+
+/* svg inside button */
+
+button svg,
+button img {
+    min-height: 25px;
+    min-width: 25px;
+    margin: 0;
+    width: fit-content;
+    fill: inherit;
+}
+
+button:has(svg),
+button:has(img) {
+    border: none;
+    background: none;
+    background-size: cover;
+}
+
+/* Body Outside*/
+html,
+body {
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto Condensed', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    background-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Header */
+header {
+    padding: 0 3vw;
+    background-color: var(--brown-accent);
+    color: var(--base);
+}
+
+/* Main */
+main {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 4fr;
+    overflow: auto;
+}
+
+/* Sidebar */
+aside#sidebar {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow: auto;
+    padding: 2vmax;
+    justify-items: center;
+    background-color: var(--green-accent);
+    /* color: var(--brown-accent); */
+}
+
+button.add-project {
+    background: var(--brown-accent);
+    color: var(--base);
+    font-size: 1.1rem;
+    padding: 1vh 2vw;
+    border: 2px solid var(--primary);
+}
+
+div#project-form-section {
+    min-height: 5vh;
+}
+
+div#projects-section,
+ul.project-container {
+    width: 100%;
+    overflow: auto;
+}
+
+div#projects-section>h2 {
+    text-align: center;
+}
+
+li.project {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    align-items: center;
+    justify-items: center;
+    border: 1px solid black;
+    margin-bottom: 3vh;
+    background-color: var(--brown-accent);
+    color: var(--base);
+    fill: var(--base);
+    border-radius: 10px;
+}
+
+li.project img {
+    filter: invert(100%);
+}
+
+form#edit-project-form {
+    grid-column: 1 / 3;
+    padding: 5vh 1vw;
+}
+
+form#edit-project-form>div.controls-section {
+    margin: 2vh 0;
+    text-align: center;
+}
+
+form#add-project-form {
+    display: grid;
+    justify-items: center;
+    gap: 2vh;
+}
+
+form#add-project-form>div.form-header {
+    display: grid;
+    grid-template-columns: 1fr 3vw;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+}
+
+form#add-project-form>div.controls-section {
+    margin-top: 3vh;
+}
+
+/* Contents section */
+div#content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
+    overflow: auto;
+    padding: 2vmax;
+    gap: 2vh;
+    max-width: 65%;
+    margin: 0 auto;
+    color: var(--base);
+}
+
+button.add-todo {
+    background-color: var(--base);
+    color: var(--primary);
+    font-size: 1.1rem;
+    padding: 1vh 2vw;
+}
+
+div#todo-form-section {
+    display: grid;
+}
+
+div#todo-form-section>button {
+    justify-self: end;
+}
+
+div#todos-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    overflow: auto;
+}
+
+div#todos-section>h2 {
+    text-align: center;
+}
+
+ul.todo-container {
+    overflow: auto;
+}
+
+li.todo-item {
+    border: 1px solid black;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 50px 1fr 100px;
+    align-items: center;
+    max-width: 500px;
+    margin-bottom: 2vh;
+    color: var(--primary);
+    border-radius: 10px;
+}
+
+li.completed-todo {
+    text-decoration: line-through;
+}
+
+li.high-priority {
+    background-color: var(--high-priority);
+}
+
+li.mid-priority {
+    background-color: var(--medium-priority);
+}
+
+li.low-priority {
+    background-color: var(--low-priority);
+}
+
+/* Add todo form */
+
+form#add-todo-form,
+form#edit-todo-form {
+    border: 1px solid black;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2vh;
+    min-height: 60%;
+    padding: 5vh 5vw;
+    background-color: var(--green-accent);
+    border-radius: 10px;
+}
+
+form#add-todo-form input,
+form#edit-todo-form input,
+form#add-todo-form textarea,
+form#edit-todo-form textarea {
+    background-color: var(--brown-accent);
+    color: var(--base);
+}
+
+form#add-todo-form>div.form-header,
+form#edit-todo-form>div.form-header {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 40px;
+}
+
+form#add-todo-form h2,
+form#edit-todo-form h2 {
+    text-align: center;
+}
+
+div.title-section,
+div.description-section,
+div.dueDate-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1vh;
+}
+
+div.options-container {
+    display: flex;
+    gap: 1vw;
+}
+
+
+/* Modal */
+
+div.modal {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(0, 0, 0, 0.5);
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+/* all controls section */
+div.todo-controls,
+div.project-controls-section {
+    display: flex;
+    gap: 12px;
+}
+
+div.todo-controls {
+    justify-self: center;
+}
+
+form#add-todo-form>div.controls-section,
+form#edit-todo-form>div.controls-section {
+    text-align: center;
+
+}
+
+form#add-todo-form>div.controls-section button,
+form#edit-todo-form>div.controls-section button {
+    background-color: var(--brown-accent);
+    color: var(--base);
+    font-size: 1.1rem;
+    padding: 5px 3vw;
+}
+
+/* Footer */
+
+footer {
+    text-align: center;
+    color: var(--base);
+    background-color: var(--brown-accent);
+}
+
+footer a,
+footer a:visited {
+    text-decoration: none;
+    color: var(--link-accent);
 }

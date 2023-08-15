@@ -68,7 +68,6 @@ const toggleTodoCompletion = (data: TodoIdPayload) => {
         todoId
     } = data
     const selectedTodo = getSingleTodo(parent, todoId);
-    console.log(selectedTodo);
     selectedTodo.completed = !selectedTodo.completed;
     EventsObserver.publish("projectChanged", { project: parent });
 }

@@ -1,31 +1,13 @@
 import EventsObserver from "./eventsObserver";
+import editIcon from "../images/note-edit.svg";
+import deleteIcon from "../images/delete-forever.svg"
+import cancelIcon from "../images/close.svg";
 
 // the edit project name form
 const editProjectNameFrmComponent = (currentName: string, projectId: string) => {
     // creating the form itself
     const frm = document.createElement('form');
     frm.id = "edit-project-form";
-
-    // creating the form header
-    const frmHeader = document.createElement('div');
-    frmHeader.classList.add('form-header');
-
-    // the form heading
-    const heading = document.createElement('h2');
-    heading.textContent = "Edit Project Name";
-    frmHeader.appendChild(heading);
-
-    // cancel button
-    const cancelBtn = document.createElement('button');
-    cancelBtn.classList.add('cancel-edit-project');
-    cancelBtn.type = "button";
-    cancelBtn.textContent = "Cancel";
-    cancelBtn.addEventListener("click", function (this: HTMLButtonElement) {
-        EventsObserver.publish("cancelEditProjectNameBtnClicked", this);
-    })
-    frmHeader.appendChild(cancelBtn);
-
-    frm.appendChild(frmHeader);
 
     // a hidden input for providing projectId
     const projectIdInput = document.createElement('input');
@@ -42,6 +24,8 @@ const editProjectNameFrmComponent = (currentName: string, projectId: string) => 
 
     const projectNameLabel = document.createElement('label');
     projectNameLabel.htmlFor = "project-name";
+    projectNameLabel.textContent = "Project Name";
+    projectNameLabel.hidden = true;
     nameSection.appendChild(projectNameLabel);
 
     const projectNameInput = document.createElement('input');
@@ -50,6 +34,16 @@ const editProjectNameFrmComponent = (currentName: string, projectId: string) => 
     projectNameInput.id = "edit-project-name"
     projectNameInput.value = currentName;
     nameSection.appendChild(projectNameInput);
+
+    // cancel button
+    const cancelBtn = document.createElement('button');
+    cancelBtn.classList.add('cancel-edit-project');
+    cancelBtn.type = "button";
+    cancelBtn.appendChild(cancelIconComponent());
+    cancelBtn.addEventListener("click", function (this: HTMLButtonElement) {
+        EventsObserver.publish("cancelEditProjectNameBtnClicked", this);
+    })
+    nameSection.appendChild(cancelBtn);
 
     frm.appendChild(nameSection);
 
@@ -75,7 +69,7 @@ const sidebarComponent = (project: ProjectType) => {
     projectLi.dataset.projectId = project.projectId;
 
     // the project name
-    const projectName = document.createElement('p');
+    const projectName = document.createElement('h3');
     projectName.textContent = project.projectName;
     projectName.dataset.projectId = project.projectId;
     // clicking on the project name "selects" the project to be displayed
@@ -84,25 +78,31 @@ const sidebarComponent = (project: ProjectType) => {
     })
     projectLi.appendChild(projectName);
 
+    // a controls section
+    const projectControls = document.createElement('div');
+    projectControls.classList.add('project-controls-section');
+
     // the edit button
     const editProjectName = document.createElement('button');
     editProjectName.classList.add('edit-project-name');
     editProjectName.value = project.projectId;
-    editProjectName.textContent = "Edit";
+    editProjectName.appendChild(editIconComponent());
     editProjectName.addEventListener("click", function (this: HTMLButtonElement) {
         EventsObserver.publish("editProjectNameBtnClicked", this);
     })
-    projectLi.appendChild(editProjectName);
+    projectControls.appendChild(editProjectName);
 
     // the delete button
     const deleteProject = document.createElement('button');
     deleteProject.classList.add('delete-project');
     deleteProject.value = project.projectId;
-    deleteProject.textContent = "Delete";
+    deleteProject.appendChild(deleteIconComponent());
     deleteProject.addEventListener("click", function (this: HTMLButtonElement) {
         EventsObserver.publish("deleteProjectClicked", { projectId: project.projectId });
     })
-    projectLi.appendChild(deleteProject);
+    projectControls.appendChild(deleteProject);
+
+    projectLi.appendChild(projectControls)
 
     // the edit project name component, initially hidden
     const editNameFrm = editProjectNameFrmComponent(project.projectName, project.projectId);
@@ -136,21 +136,25 @@ const todoComponent = (todo: TodoItemType) => {
     })
     todoLi.appendChild(doneStatusDisplay);
 
+    // container for title and description
+    const todoMainContent = document.createElement('div');
+    todoMainContent.classList.add('todo-main-content');
+
     // the todo title 
     const titleDisplay = document.createElement('p');
-    titleDisplay.textContent = todo.title;
-    todoLi.appendChild(titleDisplay);
+    titleDisplay.textContent =
+        `Task ${todo.title} is due by 
+        ${new Date(todo.dueDate).toDateString()} 
+        with a priority of ${todo.priority}`;
+    todoMainContent.appendChild(titleDisplay);
 
     // the todo description
     const descriptionDisplay = document.createElement('p');
-    descriptionDisplay.textContent = todo.description;
+    descriptionDisplay.textContent = `Task Description: ${todo.description}`;
     descriptionDisplay.classList.add('hidden');
-    todoLi.appendChild(descriptionDisplay);
+    todoMainContent.appendChild(descriptionDisplay);
 
-    // the todo dueDate
-    const dueDateDisplay = document.createElement('p');
-    dueDateDisplay.textContent = new Date(todo.dueDate).toDateString();
-    todoLi.appendChild(dueDateDisplay);
+    todoLi.appendChild(todoMainContent);
 
     // the controls section housing the edit and delete buttons
     const controlSection = document.createElement('div');
@@ -160,7 +164,7 @@ const todoComponent = (todo: TodoItemType) => {
     const editTodoBtn = document.createElement('button');
     editTodoBtn.classList.add('edit-todo-btn');
     editTodoBtn.value = JSON.stringify(todoIdentifier);
-    editTodoBtn.textContent = "Edit";
+    editTodoBtn.appendChild(editIconComponent());
     editTodoBtn.addEventListener("click", () => {
         // when the edit todo button is clicked render the edit todo form
         EventsObserver.publish("editTodoBtnClicked", todo);
@@ -171,7 +175,7 @@ const todoComponent = (todo: TodoItemType) => {
     const deleteTodoBtn = document.createElement('button');
     deleteTodoBtn.classList.add('delete-todo-btn');
     deleteTodoBtn.value = JSON.stringify(todoIdentifier);
-    deleteTodoBtn.textContent = "Delete";
+    deleteTodoBtn.appendChild(deleteIconComponent());
     // event handler for deleting the todo
     deleteTodoBtn.addEventListener("click", () => {
         EventsObserver.publish("deleteTodoBtnClicked", todoIdentifier);
@@ -223,7 +227,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     const cancelBtn = document.createElement('button');
     cancelBtn.type = "button";
     cancelBtn.classList.add('cancel-edit-todo');
-    cancelBtn.textContent = "Cancel";
+    cancelBtn.appendChild(cancelIconComponent());
     frmHeader.appendChild(cancelBtn);
 
     // a hidden input holding the todoId
@@ -306,6 +310,10 @@ const editTodoComponent = (todo: TodoItemType) => {
     priorityHeading.textContent = "Set Priority";
     prioritySection.appendChild(priorityHeading);
 
+
+    const optionsContainer = document.createElement('div');
+    optionsContainer.classList.add('options-container');
+
     // A section for high option
     const highOptionContainer = document.createElement('div');
     highOptionContainer.classList.add('radio-option');
@@ -324,7 +332,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     highOptionLabel.textContent = "High";
     highOptionContainer.appendChild(highOptionLabel);
 
-    prioritySection.appendChild(highOptionContainer);
+    optionsContainer.appendChild(highOptionContainer);
 
     // A section for medium button
     const midOptionContainer = document.createElement('div');
@@ -344,7 +352,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     midOptionLabel.textContent = "Medium";
     midOptionContainer.appendChild(midOptionLabel);
 
-    prioritySection.appendChild(midOptionContainer);
+    optionsContainer.appendChild(midOptionContainer);
 
     // A section for low option
     const lowOptionContainer = document.createElement('div');
@@ -364,7 +372,9 @@ const editTodoComponent = (todo: TodoItemType) => {
     lowOptionLabel.textContent = "Low";
     lowOptionContainer.appendChild(lowOptionLabel);
 
-    prioritySection.appendChild(lowOptionContainer);
+    optionsContainer.appendChild(lowOptionContainer);
+
+    prioritySection.appendChild(optionsContainer);
 
     // based on the current todo's data select appropriate option
     switch (todo.priority) {
@@ -394,6 +404,22 @@ const editTodoComponent = (todo: TodoItemType) => {
     editTodoFrm.appendChild(controlsSection);
 
     return editTodoFrm;
+}
+
+const editIconComponent = () => {
+    const icon = document.createElement('img');
+    icon.src = editIcon;
+    return icon
+}
+const deleteIconComponent = () => {
+    const icon = document.createElement('img');
+    icon.src = deleteIcon;
+    return icon
+}
+const cancelIconComponent = () => {
+    const icon = document.createElement('img');
+    icon.src = cancelIcon;
+    return icon
 }
 
 export {

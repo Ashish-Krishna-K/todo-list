@@ -15,6 +15,8 @@ import {
     getTodoContainer,
     getTodoFrm,
     getTodosSection,
+    getAddTodoModal,
+    getProjectControls
 } from "./domSelectors";
 import {
     editTodoComponent,
@@ -29,8 +31,12 @@ const renderSidebar = (data: ListPayload) => {
     // remove all current contents of the sidebar
     projectsSection.innerHTML = '';
 
+    const heading = document.createElement('h2');
+    heading.textContent = "Projects";
+    projectsSection.appendChild(heading);
+
     const sidebarContainer = document.createElement('ul');
-    sidebarContainer.classList.add('sidebar');
+    sidebarContainer.classList.add('project-container');
     // create a li item by calling the sidebarComponent for each project
     todoList.forEach(project => {
         sidebarContainer.appendChild(sidebarComponent(project))
@@ -56,9 +62,14 @@ const renderProject = (data: ProjectPayload) => {
     todoContainer.classList.add('todo-container');
     todoContainer.dataset.projectId = selectedProject.projectId;
     // for each todo item in the project render the todoComponent as li element
-    selectedProject.todos?.forEach(todo => {
-        todoContainer.appendChild(todoComponent(todo));
-    });
+    if (selectedProject.todos.length === 0) {
+        todoContainer.textContent = "You don't have any todos in this project, add a new todo."
+    } else {
+        selectedProject.todos?.forEach(todo => {
+            todoContainer.appendChild(todoComponent(todo));
+        });
+    }
+
     todoSection.appendChild(todoContainer);
     EventsObserver.publish("projectRendered");
 };
@@ -71,15 +82,19 @@ const toggleAddProjectForm = () => {
 // show/hide the add todo form
 const toggleAddTodoForm = () => {
     getTodoFrm().classList.toggle('hidden');
+    getAddTodoModal().classList.toggle('hidden');
     // hide the todos section when add todo form is shown
     getTodosSection().classList.toggle('hidden');
 };
 
 // event handler when edit project name is clicked, this is getting the data from the event publisher
 const handleEditProjectNameBtnClick = (btn: HTMLButtonElement) => {
-    const editFrm = btn.parentElement.querySelector('form#edit-project-form');
+    const projectControls = getProjectControls(btn.parentElement.parentElement);
+    const editFrm = projectControls.nextElementSibling;
+    const projectNameDisplay = projectControls.previousElementSibling;
     editFrm.classList.remove('hidden');
-    btn.classList.add('hidden');
+    projectControls.classList.add('hidden');
+    projectNameDisplay.classList.add('hidden');
     // attach the submit event listener to the form
     editFrm.addEventListener("submit", function (this: HTMLFormElement, ev: SubmitEvent) {
         // prevent the default action of the submit event
@@ -96,21 +111,26 @@ const handleEditProjectNameBtnClick = (btn: HTMLButtonElement) => {
 
 // event handler when the cancel edit project name is clicked
 const handleCancelEditProjectNameBtnClick = (btn: HTMLButtonElement) => {
-    const editFrm = btn.parentElement.parentElement;
-    editFrm.classList.add('hidden');
-    const parent = editFrm.parentElement;
-    parent.querySelector('button.edit-project-name').classList.remove('hidden');
+    const projectControls = getProjectControls(btn.parentElement.parentElement.parentElement);
+    projectControls.nextElementSibling.classList.add('hidden');
+    projectControls.previousElementSibling.classList.remove('hidden');
+    projectControls.classList.remove('hidden');
 }
 
 // event handler for the edit todo item button is clicked, it get's the data from the event
 // publisher
 const handleEditTodoBtnClick = (todo: TodoItemType) => {
     const editTodoSection = getEditTodoSection();
+    getTodosSection().classList.toggle('hidden');
     editTodoSection.classList.remove('hidden');
     // remove the current contents of the editTodoSection
     editTodoSection.innerHTML = '';
+    // create a modal
+    const modalDisplay = document.createElement('div');
+    modalDisplay.classList.add('modal');
     // render a new editTodoForm with the provided todo data
-    editTodoSection.appendChild(editTodoComponent(todo));
+    modalDisplay.appendChild(editTodoComponent(todo));
+    editTodoSection.appendChild(modalDisplay);
     // we will attach the event listeners here because the edit form is rendered only after the 
     // edit button is clicked
 
@@ -129,20 +149,25 @@ const handleEditTodoBtnClick = (todo: TodoItemType) => {
         // reset the todo form
         this.reset();
         editTodoSection.classList.add('hidden');
+        getTodosSection().classList.toggle('hidden');
     });
     // attach the cancel event listener
     getCancelEditTodoBtn().addEventListener("click", function (this: HTMLButtonElement, ev: MouseEvent) {
         editTodoSection.classList.add('hidden');
+        getTodosSection().classList.toggle('hidden');
     })
 }
 
 // show error message
 const handleShowError = (data: GenericObj) => {
+    const errorSection = getErrorSection()
     getErrorMsgDisplay().textContent = data.errorMsg;
-    getErrorSection().classList.remove('hidden');
+    errorSection.classList.remove('hidden');
+    errorSection.firstElementChild.classList.toggle('hidden');
     // attach event listener to the button to dismiss error
     getDismissErrorBtn().addEventListener("click", function (this: HTMLButtonElement, ev: MouseEvent) {
-        this.parentElement.classList.add('hidden');
+        errorSection.classList.add('hidden');
+        errorSection.firstElementChild.classList.toggle('hidden');
     })
 }
 

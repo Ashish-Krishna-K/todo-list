@@ -57,6 +57,7 @@ const handleProjectNameChangeRequest = (data: GenericObj) => {
         newName
     } = data;
     todoList.editProjectName(projectId, newName);
+    EventsObserver.publish("projectChanged", { project: todoList.getProject(projectId) })
     publishListChange();
 }
 
@@ -92,7 +93,7 @@ const handleDeleteProject = (data: GenericObj) => {
 // a request to toggle todo completion status is received, get the relevant project
 // and publish it to be toggled
 const handleToggleTodoStatus = (data: GenericObj) => {
-    EventsObserver.publish("toggleTodoStatus", { parent: todoList.getProject(data.parent), todoId: data.todoId });
+    EventsObserver.publish("toggleTodoStatus", { parent: todoList.getProject(data.parent), todoId: data.todoid });
 }
 
 // a request to delete a todo item received, get the relevant project and publish
