@@ -332,6 +332,28 @@ form#edit-todo-form>div.controls-section button {
     padding: 5px 3vw;
 }
 
+/* Error Section */
+
+div.modal>div {
+    background-color: var(--brown-accent);
+    color: var(--green-accent);
+    padding: 1vmax;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+button.dismiss-error {
+    background-color: var(--green-accent);
+    border: 2px solid var(--green-accent);
+    color: var(--primary);
+    padding: 8px;
+    font-size: 1.2rem;
+    border-radius: 100%;
+}
+
 /* Footer */
 
 footer {
