@@ -4,8 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+        rel="stylesheet">
     <title>ToDo List</title>
-</head>
+<script defer src="index.js"></script></head>
 
 <body>
     <header>
@@ -18,11 +23,16 @@
                 <form action="#" id="add-project-form" class="hidden">
                     <div class="form-header">
                         <h2>Add Project</h2>
-                        <button type="button" class="cancel-add-project">Cancel</button>
+                        <button type="button" class="cancel-add-project">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path
+                                    d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                            </svg>
+                        </button>
                     </div>
                     <div class="name-section">
-                        <label for="project-name">Project Name</label>
-                        <input type="text" name="project-name" id="project-name">
+                        <label for="project-name" hidden>Project Name</label>
+                        <input type="text" name="project-name" id="project-name" placeholder="Project Name">
                     </div>
                     <div class="controls-section">
                         <button type="submit" class="submit-project-btn">Add</button>
@@ -30,54 +40,69 @@
                     </div>
                 </form>
             </div>
-            <div class="projects-section"></div>
+            <div id="projects-section"></div>
         </aside>
-        <div id="todo-form-section">
-            <button type="button" class="add-todo">Add Todo</button>
-            <form action="#" id="add-todo-form" class="hidden">
-                <div class="form-header">
-                    <h2>Add Todo</h2>
-                    <button type="button" class="cancel-add-todo">Cancel</button>
+        <div id="content-wrapper">
+            <div id="todo-form-section">
+                <button type="button" class="add-todo">Add Todo</button>
+                <div class="modal hidden">
+                    <form action="#" id="add-todo-form" class="hidden">
+                        <div class="form-header">
+                            <h2>Add Todo</h2>
+                            <button type="button" class="cancel-add-todo">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path
+                                        d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="title-section">
+                            <label for="title">Title</label>
+                            <input type="text" name="title" id="title">
+                        </div>
+                        <div class="description-section">
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" cols="30" rows="10"></textarea>
+                        </div>
+                        <div class="dueDate-section">
+                            <label for="due-date">Due by</label>
+                            <input type="date" name="dueDate" id="due-date">
+                        </div>
+                        <div class="priority-section">
+                            <h3>Set Priority</h3>
+                            <div class="options-container">
+                                <div class="radio-option">
+                                    <input type="radio" name="priority" id="high" value="HIGH">
+                                    <label for="high">High</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="priority" id="medium" value="MEDIUM">
+                                    <label for="medium">Medium</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" name="priority" id="low" value="LOW">
+                                    <label for="low">Low</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="controls-section">
+                            <button type="submit" class="submit-todo-btn">Add</button>
+                            <button type="reset">Clear</button>
+                        </div>
+                    </form>
                 </div>
-                <div class="title-section">
-                    <label for="title">Title</label>
-                    <input type="text" name="title" id="title">
-                </div>
-                <div class="description-section">
-                    <label for="description">Description</label>
-                    <textarea name="description" id="description" cols="30" rows="10"></textarea>
-                </div>
-                <div class="dueDate-section">
-                    <label for="due-date">Due by</label>
-                    <input type="date" name="dueDate" id="due-date">
-                </div>
-                <div class="priority-section">
-                    <h3>Set Priority</h3>
-                    <div class="radio-option">
-                        <input type="radio" name="priority" id="high" value="HIGH">
-                        <label for="high">High</label>
+            </div>
+            <div id="edit-todo-form-section" class="hidden"></div>
+            <div id="todos-section"></div>
+            <div id="errors-section" class="hidden">
+                <div class="modal hidden">
+                    <div>
+                        <h2>ERROR</h2>
+                        <p class="error-msg"></p>
+                        <button class="dismiss-error">OK</button>
                     </div>
-                    <div class="radio-option">
-                        <input type="radio" name="priority" id="medium" value="MEDIUM">
-                        <label for="medium">Medium</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" name="priority" id="low" value="LOW">
-                        <label for="low">Low</label>
-                    </div>
                 </div>
-                <div class="controls-section">
-                    <button type="submit" class="submit-todo-btn">Add</button>
-                    <button type="reset">Clear</button>
-                </div>
-            </form>
-        </div>
-        <div id="edit-todo-form-section" class="hidden"></div>
-        <div id="todos-section"></div>
-        <div id="errors-section" class="hidden">
-            <h2>ERROR</h2>
-            <p class="error-msg"></p>
-            <button class="dismiss-error">OK</button>
+            </div>
         </div>
     </main>
     <footer>
