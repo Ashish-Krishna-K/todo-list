@@ -257,6 +257,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     titleInput.name = "title";
     titleInput.id = "title";
     titleInput.value = todo.title;
+    titleInput.required = true;
     titleSection.appendChild(titleInput);
 
     editTodoFrm.appendChild(titleSection);
@@ -297,6 +298,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     dueDateInput.name = "dueDate";
     dueDateInput.id = "dueDate";
     dueDateInput.value = new Date(todo.dueDate).toISOString().substring(0, 10);
+    dueDateInput.required = true;
     dueDateSection.appendChild(dueDateInput);
 
     editTodoFrm.appendChild(dueDateSection);
@@ -324,6 +326,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     highOption.name = "priority";
     highOption.id = "high";
     highOption.value = "HIGH";
+    highOption.required = true;
     highOptionContainer.appendChild(highOption);
 
     // high option label
@@ -344,6 +347,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     midOption.name = "priority";
     midOption.id = "medium";
     midOption.value = "MEDIUM";
+    midOption.required = true;
     midOptionContainer.appendChild(midOption);
 
     // medium option label
@@ -364,6 +368,7 @@ const editTodoComponent = (todo: TodoItemType) => {
     lowOption.name = "priority";
     lowOption.id = "low";
     lowOption.value = "LOW";
+    lowOption.required = true;
     lowOptionContainer.appendChild(lowOption);
 
     // a label for low option

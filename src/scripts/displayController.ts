@@ -16,13 +16,17 @@ import {
     getTodoFrm,
     getTodosSection,
     getAddTodoModal,
-    getProjectControls
+    getProjectControls,
+    getDateInput
 } from "./domSelectors";
 import {
     editTodoComponent,
     sidebarComponent,
     todoComponent
 } from "./displayComponents"
+
+// Set the minimum value of dueDate field to today.
+getDateInput().min = new Date().toISOString().split("T")[0];
 
 // render the sidebar
 const renderSidebar = (data: ListPayload) => {
@@ -100,6 +104,9 @@ const handleEditProjectNameBtnClick = (btn: HTMLButtonElement) => {
         // prevent the default action of the submit event
         ev.preventDefault();
         const formData = new FormData(this);
+        if (!formData.get("project-name")) {
+            EventsObserver.publish("showError", {msg: "Project name is not valid"});
+        }
         const payLoad = {
             projectId: formData.get("project-id").toString(),
             newName: formData.get("project-name").toString()
@@ -139,6 +146,21 @@ const handleEditTodoBtnClick = (todo: TodoItemType) => {
         // prevent the default action of the submit event
         ev.preventDefault();
         const formData = new FormData(this);
+        // show error if title field is blank
+        if (!formData.get("title")) {
+            EventsObserver.publish("showError", {msg: "Input field can't be blank"});
+            return;
+        }
+        // show error if due date field is blank
+        if (!formData.get("dueDate")) {
+            EventsObserver.publish("showError", {msg: "Due date can't be blank"});
+            return
+        }
+        // show error if priority is not selected
+        if (!formData.get("priority")) {
+            EventsObserver.publish("showError", {msg: "A Priority must be assigned"});
+            return
+        }
         const data: GenericObj = {}
         for (let [key, value] of formData.entries()) {
             data[key] = value.toString();
@@ -198,8 +220,12 @@ getProjectFrm().addEventListener("submit", function (this: HTMLFormElement, ev: 
     // prevent the default action of the submit event
     ev.preventDefault();
     const formData = new FormData(this);
+    const projectName = formData.get("project-name");
+    if (!projectName) {
+        EventsObserver.publish("showError", {msg: "Project name is not valid"});
+    }
     // publish the "newProjectCreationRequest" event with the name as the EventData
-    EventsObserver.publish("newProjectCreationRequest", { projectName: formData.get("project-name").toString() });
+    EventsObserver.publish("newProjectCreationRequest", { projectName: projectName.toString() });
     // reset the form
     this.reset();
     toggleAddProjectForm();
@@ -211,6 +237,21 @@ getTodoFrm().addEventListener("submit", function (this: HTMLFormElement, ev: Sub
     // prevent the default action of the submit event
     ev.preventDefault();
     const formData = new FormData(this);
+    // show error if title field is blank
+    if (!formData.get("title")) {
+        EventsObserver.publish("showError", {msg: "Input field can't be blank"});
+        return;
+    }
+    // show error if due date field is blank
+    if (!formData.get("dueDate")) {
+        EventsObserver.publish("showError", {msg: "Due date can't be blank"});
+        return
+    }
+    // show error if priority is not selected
+    if (!formData.get("priority")) {
+        EventsObserver.publish("showError", {msg: "A Priority must be assigned"});
+        return
+    }
     const data: GenericObj = {}
     for (let [key, value] of formData.entries()) {
         data[key] = value.toString();

@@ -354,6 +354,13 @@ button.dismiss-error {
     border-radius: 100%;
 }
 
+/* Form input is invalid */
+
+:invalid {
+    outline-color: red;
+    border-color: red;
+}
+
 /* Footer */
 
 footer {

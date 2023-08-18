@@ -19,6 +19,7 @@ const getErrorSection = () => document.querySelector('div#errors-section') as HT
 const getErrorMsgDisplay = () => document.querySelector('p.error-msg') as HTMLParagraphElement;
 const getDismissErrorBtn = () => document.querySelector('button.dismiss-error') as HTMLButtonElement;
 const getProjectControls = (parent: HTMLElement) => parent.querySelector('div.project-controls-section') as HTMLElement;
+const getDateInput = () => getTodoFrm().querySelector('input[type="date"]') as HTMLInputElement;
 const getEditProjectNameFrms = () => document.querySelectorAll('form#edit-project-form');
 
 export {
@@ -39,5 +40,6 @@ export {
     getErrorMsgDisplay,
     getDismissErrorBtn,
     getAddTodoModal,
-    getProjectControls
+    getProjectControls,
+    getDateInput
 }
